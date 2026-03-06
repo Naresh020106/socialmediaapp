@@ -1,0 +1,30 @@
+{
+  "defaults": {
+    "project": 1,
+    "env": 1
+  },
+  "actives": {
+    "project": 1,
+    "env": 1
+  },
+  "projects": [
+    {
+      "idx": 1,
+      "id": "919000000011090",
+      "name": "mini-ai-social",
+      "domain": {
+        "id": "8006048522",
+        "name": "mini-ai-social-7006507973.development"
+      },
+      "timezone": "Asia/Kolkata",
+      "env": [
+        {
+          "idx": 1,
+          "id": "7006507973",
+          "name": "Development",
+          "type": 3
+        }
+      ]
+    }
+  ]
+}
