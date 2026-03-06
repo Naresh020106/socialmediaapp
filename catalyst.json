@@ -1,8 +1,12 @@
 {
   "appsail": [
     {
+      "name": "app",
       "source": ".",
-      "name": "app"
+      "stack": "node18",
+      "build_command": "npm install && npm run build",
+      "start_command": "npm start",
+      "memory": 256
     }
   ]
 }
