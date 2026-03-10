@@ -30,11 +30,16 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
+    async redirect({ url, baseUrl }) {
+      console.log('Redirect callback:', url, baseUrl);
+      return url.startsWith(baseUrl) ? url : baseUrl + '/home';
+    },
     async jwt({ token, user }) {
       if (user) token.id = user.id;
       return token;
     },
     async session({ session, token }) {
+      console.log('Session callback:', session, token);
       if (token.id) session.user.id = token.id as string;
       return session;
     },
