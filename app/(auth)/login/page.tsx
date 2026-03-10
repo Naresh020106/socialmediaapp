@@ -1,11 +1,9 @@
 'use client';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function LoginPage() {
-  const router = useRouter();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -16,18 +14,23 @@ export default function LoginPage() {
     setLoading(true);
 
     const result = await signIn('credentials', {
-      ...form,
+      email: form.email,
+      password: form.password,
       redirect: false,
     });
 
     setLoading(false);
+
+    console.log('SignIn result:', result);
 
     if (result?.error) {
       setError('Invalid email or password');
       return;
     }
 
-    router.push('/home');
+    if (result?.ok) {
+      window.location.href = '/home';
+    }
   }
 
   return (
@@ -75,7 +78,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-black py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
           >
             {loading ? 'Signing in...' : 'Login'}
           </button>
