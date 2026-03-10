@@ -1,0 +1,10 @@
+{
+	"name": "mini_ai_social_function",
+	"version": "1.0.0",
+	"main": "index.js",
+	"author": "naresh@thedsk.au",
+	"dependencies": {
+		"mongoose": "^9.2.4",
+		"zcatalyst-sdk-node": "latest"
+	}
+}

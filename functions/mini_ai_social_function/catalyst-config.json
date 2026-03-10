@@ -1,0 +1,11 @@
+{
+	"deployment": {
+		"name": "mini_ai_social_function",
+		"stack": "node20",
+		"type": "basicio",
+		"env_variables": {}
+	},
+	"execution": {
+		"main": "index.js"
+	}
+}

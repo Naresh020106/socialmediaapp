@@ -8,5 +8,12 @@
       "start_command": "npm start",
       "memory": 256
     }
-  ]
+  ],
+  "functions": {
+    "targets": [
+      "mini_ai_social_function"
+    ],
+    "ignore": [],
+    "source": "functions"
+  }
 }

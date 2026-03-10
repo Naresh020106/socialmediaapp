@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { PostWithAuthor } from '@/types';
+import axios from 'axios';
 
 export default function PostCard({ post }: { post: PostWithAuthor }) {
   const { data: session } = useSession();
@@ -11,6 +12,7 @@ export default function PostCard({ post }: { post: PostWithAuthor }) {
   const [comments, setComments] = useState<any[]>([]);
   const [showComments, setShowComments] = useState(false);
   const [loadingComment, setLoadingComment] = useState(false);
+  const [externalData, setExternalData] = useState("--- No data fetched yet ---");
 
   useEffect(() => {
     async function fetchLikes() {
@@ -80,6 +82,16 @@ export default function PostCard({ post }: { post: PostWithAuthor }) {
   function shareToWhatsApp() {
     const text = encodeURIComponent(post.content);
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+  }
+
+  async function fetchExternalData() {
+    try {
+      const res = await axios.get('/api/test');
+      console.log('External API Data:', res.data);
+      setExternalData(res.data.message.output);
+    } catch (err) {
+      console.error('Failed to fetch external data:', err);
+    }
   }
 
   return (
@@ -171,6 +183,16 @@ export default function PostCard({ post }: { post: PostWithAuthor }) {
               </button>
             </form>
           )}
+        </div>
+      )}
+      <button onClick={() => {fetchExternalData();}} className="fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-700 transition">
+        Fetch External Data
+      </button>
+
+      {externalData && (
+        <div className="fixed bottom-16 right-4 bg-white p-4 rounded-lg shadow-lg max-w-sm w-full">
+          <h3 className="font-semibold mb-2">External API Data:</h3>
+          <pre className="text-sm text-gray-700 overflow-x-auto">{JSON.stringify(externalData, null, 2)}</pre>
         </div>
       )}
     </div>

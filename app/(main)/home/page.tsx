@@ -1,3 +1,4 @@
+
 import { connectDB } from '@/lib/mongodb';
 import { Post } from '@/models/Post';
 import PostForm from '@/components/post/PostForm';
@@ -7,8 +8,12 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
+
+
 export default async function HomePage() {
   const session = await getServerSession(authOptions);
+  
+  
   if (!session) redirect('/login');
 
   await connectDB();
@@ -20,7 +25,13 @@ export default async function HomePage() {
     .populate('author', 'username avatar')
     .lean();
 
+
+
   const serialized = JSON.parse(JSON.stringify(posts)) as PostWithAuthor[];
+
+
+  
+
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -69,6 +80,7 @@ export default async function HomePage() {
           )}
         </div>
       </div>
+      
     </main>
   );
 }
