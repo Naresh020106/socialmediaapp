@@ -1,6 +1,6 @@
 {
 	"deployment": {
-		"name": "mini_ai_social_function",
+		"name": "socialmediaapp_function",
 		"stack": "node20",
 		"type": "basicio",
 		"env_variables": {}

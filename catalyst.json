@@ -11,7 +11,7 @@
   ],
   "functions": {
     "targets": [
-      "mini_ai_social_function"
+      "socialmediaapp_function"
     ],
     "ignore": [],
     "source": "functions"
