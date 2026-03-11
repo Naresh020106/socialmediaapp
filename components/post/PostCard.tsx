@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { PostWithAuthor } from '@/types';
+import { CommentWithAuthor, PostWithAuthor } from '@/types';
 import axios from 'axios';
 
 export default function PostCard({ post }: { post: PostWithAuthor }) {
@@ -9,7 +9,7 @@ export default function PostCard({ post }: { post: PostWithAuthor }) {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [comment, setComment] = useState('');
-  const [comments, setComments] = useState<any[]>([]);
+  const [comments, setComments] = useState<CommentWithAuthor[]>([]);
   const [showComments, setShowComments] = useState(false);
   const [loadingComment, setLoadingComment] = useState(false);
   const [externalData, setExternalData] = useState("--- No data fetched yet ---");
@@ -152,7 +152,7 @@ export default function PostCard({ post }: { post: PostWithAuthor }) {
             </p>
           )}
 
-          {comments.map((c: any) => (
+          {comments.map(c => (
             <div key={c._id} className="flex gap-2 text-sm">
               <div className="w-7 h-7 rounded-full bg-gray-300 flex items-center justify-center text-white text-xs font-bold">
                 {c.author?.username?.[0]?.toUpperCase() ?? '?'}

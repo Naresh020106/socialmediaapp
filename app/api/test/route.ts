@@ -14,7 +14,8 @@ export async function GET(req: Request) {
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
 
-  } catch (err: any) {
+  } catch (error) {
+    const err = error as Error;
     console.error('Error fetching Catalyst function:', err.message || err);
 
     return new Response(

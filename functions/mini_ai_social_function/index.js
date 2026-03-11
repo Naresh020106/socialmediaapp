@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -80,8 +80,12 @@ module.exports = async (context, basicIO) => {
     basicIO.write(JSON.stringify({
       success: false,
       error: 'Failed to fetch posts',
-      details: err.message,
+      details: err?.message || String(err),
     }));
     context.close();
   }
 };
+
+export default function handler(context, basicIO) {
+  return module.exports(context, basicIO);
+}

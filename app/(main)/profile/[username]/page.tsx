@@ -10,6 +10,13 @@ import { authOptions } from '@/lib/auth';
 import FollowButton from '@/components/profile/FollowButton';
 import EditProfileForm from '@/components/profile/EditProfileForm';
 
+interface UserProfile {
+  _id: string;
+  username: string;
+  avatar?: string;
+  bio?: string;
+}
+
 export default async function ProfilePage({
   params,
 }: {
@@ -20,7 +27,7 @@ export default async function ProfilePage({
 
   await connectDB();
 
-  const user = await User.findOne({ username }).lean() as any;
+  const user = await User.findOne({ username }).lean<UserProfile | null>();
 
   if (!user) {
     return (
