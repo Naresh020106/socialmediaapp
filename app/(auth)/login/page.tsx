@@ -1,9 +1,11 @@
 'use client';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,7 +31,8 @@ export default function LoginPage() {
     }
 
     if (result?.ok) {
-      window.location.href = '/home';
+      const redirectUrl = result.url || '/home';
+      router.push(redirectUrl);
     }
   }
 
