@@ -62,7 +62,7 @@ export default function SearchPage() {
           {users.length === 0 && query && !loading && (
             <div className="text-center py-8 text-gray-600">
               <p className="text-3xl mb-2">😕</p>
-              <p>No users found for "{query}"</p>
+              <p>No users found for &quot;{query}&quot;</p>
             </div>
           )}
 

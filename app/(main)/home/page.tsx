@@ -71,7 +71,7 @@ export default async function HomePage() {
           {serialized.length === 0 ? (
             <div className="text-center py-12 text-gray-600">
               <p className="text-4xl mb-2">📭</p>
-              <p>You haven't posted anything yet!</p>
+              <p>You haven&apos;t posted anything yet!</p>
             </div>
           ) : (
             serialized.map(post => (
