@@ -13,12 +13,38 @@ export async function GET() {
       .populate('author', 'username avatar')
       .lean();
 
-    const formattedPosts = posts.map((post: any) => ({
-      post_id:      post._id.toString(),
-      user_id:      post.author?._id?.toString() || '',
-      content:      post.content,
-      created_time: post.createdAt,
-    }));
+    // Manually fetch author if populate fails
+    const formattedPosts = await Promise.all(
+      posts.map(async (post: any) => {
+        let username = 'Unknown';
+        let avatar = '';
+
+        if (post.author) {
+          if (post.author.username) {
+            // populate worked
+            username = post.author.username;
+            avatar = post.author.avatar || '';
+          } else {
+            // populate failed, fetch manually
+            const user = await User.findById(post.author).lean() as any;
+            if (user) {
+              username = user.username;
+              avatar = user.avatar || '';
+            }
+          }
+        }
+
+        return {
+          post_id:         post._id.toString(),
+          user_id:         post.author?._id?.toString() || post.author?.toString() || '',
+          username:        username,
+          avatar:          avatar,
+          content:         post.content,
+          is_ai_generated: post.isAIGenerated || false,
+          created_time:    post.createdAt,
+        };
+      })
+    );
 
     return NextResponse.json({
       success: true,
