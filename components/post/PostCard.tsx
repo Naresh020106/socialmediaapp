@@ -14,6 +14,9 @@ export default function PostCard({ post }: { post: PostWithAuthor }) {
   const [loadingComment, setLoadingComment] = useState(false);
   const [externalData, setExternalData] = useState("--- No data fetched yet ---");
 
+  const authorName = (post?.author?.username || 'Unknown').toString();
+  const authorInitial = authorName ? authorName[0].toUpperCase() : '?';
+
   useEffect(() => {
     async function fetchLikes() {
       try {
@@ -88,9 +91,11 @@ export default function PostCard({ post }: { post: PostWithAuthor }) {
     try {
       const res = await axios.get('/api/test');
       console.log('External API Data:', res.data);
-      setExternalData(res.data.message.output);
+      const externalText = res.data?.message?.output ?? 'No external data';
+      setExternalData(externalText);
     } catch (err) {
       console.error('Failed to fetch external data:', err);
+      setExternalData('Failed to fetch external data');
     }
   }
 
@@ -99,10 +104,10 @@ export default function PostCard({ post }: { post: PostWithAuthor }) {
       {/* Author */}
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
-          {post.author.username[0].toUpperCase()}
+          {authorInitial}
         </div>
         <div>
-          <p className="font-semibold text-gray-800">{post.author.username}</p>
+          <p className="font-semibold text-gray-800">{authorName}</p>
           <p className="text-xs text-gray-600">
             {new Date(post.createdAt).toLocaleDateString()}
           </p>

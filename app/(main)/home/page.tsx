@@ -1,112 +1,72 @@
-'use client';
+import { connectDB } from '@/lib/mongodb';
+import { Post } from '@/models/Post';
+import PostForm from '@/components/post/PostForm';
+import PostCard from '@/components/post/PostCard';
+import { PostWithAuthor } from '@/types';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+export default async function HomePage() {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect('/login');
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  await connectDB();
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+  const posts = await Post.find({ author: session.user.id })
+    .sort({ createdAt: -1 })
+    .limit(20)
+    .populate('author', 'username avatar')
+    .lean();
 
-    const result = await signIn('credentials', {
-      email: form.email,
-      password: form.password,
-      redirect: false,
-      callbackUrl: '/home',
-    });
+  const serialized = JSON.parse(JSON.stringify(posts)) as PostWithAuthor[];
 
-    setLoading(false);
-
-    console.log('SignIn result:', result);
-
-    if (result?.error) {
-      setError('Invalid email or password');
-      return;
-    }
-
-    if (result?.ok) {
-      router.push('/home');
-    }
-  }
+  const username = session.user?.name ?? session.user?.email ?? 'user';
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-6 text-blue-600">
-          Welcome Back
-        </h1>
-
-        {error && (
-          <p className="bg-red-50 text-red-500 p-3 rounded-lg mb-4 text-sm">
-            {error}
-          </p>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1"
+    <main className="min-h-screen bg-gray-50">
+      <nav className="bg-white border-b border-gray-100 sticky top-0 z-10">
+        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+          <h1 className="text-xl font-bold text-blue-600">🌐 Mini AI Social</h1>
+          <div className="flex gap-3">
+            <a
+              href="/discover"
+              className="text-sm bg-gray-100 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition"
             >
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"   // ✅ Added name
-              type="email"
-              value={form.email}
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
-              placeholder="you@example.com"
-              autoComplete="email"
-              required
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              🌍 Discover
+            </a>
+            <a
+              href="/search"
+              className="text-sm bg-gray-100 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition"
             >
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"   // ✅ Added name
-              type="password"
-              value={form.password}
-              onChange={(e) => setForm({ ...form, password: e.target.value })}
-              placeholder="••••••••"
-              autoComplete="current-password"
-              required
-              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+              🔍 Search
+            </a>
+            <a
+              href={`/profile/${encodeURIComponent(username.toString())}`}
+              className="text-sm bg-blue-50 text-blue-600 px-3 py-2 rounded-lg hover:bg-blue-100 transition font-medium"
+            >
+              👤 {username}
+            </a>
           </div>
+        </div>
+      </nav>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
+      <div className="max-w-2xl mx-auto py-6 px-4 space-y-6">
+        <PostForm />
 
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Don’t have an account?{' '}
-          <Link href="/register" className="text-blue-600 hover:underline">
-            Register
-          </Link>
-        </p>
+        <h2 className="font-semibold text-gray-700">My Posts</h2>
+
+        <div className="space-y-4">
+          {serialized.length === 0 ? (
+            <div className="text-center py-12 text-gray-600">
+              <p className="text-4xl mb-2">📭</p>
+              <p>You haven&apos;t posted anything yet!</p>
+            </div>
+          ) : (
+            serialized.map((post) => <PostCard key={post._id} post={post} />)
+          )}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }
