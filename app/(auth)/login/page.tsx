@@ -16,25 +16,14 @@ export default function LoginPage() {
     setError('');
     setLoading(true);
 
-    const result = await signIn('credentials', {
+    await signIn('credentials', {
       email: form.email,
       password: form.password,
-      redirect: false,
+      redirect: true,
       callbackUrl: '/home',
     });
 
     setLoading(false);
-
-    console.log('SignIn result:', result);
-
-    if (result?.error) {
-      setError('Invalid email or password');
-      return;
-    }
-
-    if (result?.ok) {
-      router.push('/home');
-    }
   }
 
   return (
