@@ -14,7 +14,6 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    '/home/:path*',
     '/profile/:path*',
     '/api/posts/:path*',
     '/api/ai/:path*',
