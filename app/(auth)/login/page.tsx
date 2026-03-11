@@ -18,7 +18,7 @@ export default function LoginPage() {
       email: form.email,
       password: form.password,
       redirect: true,
-      callbackUrl: '/home',
+      callbackUrl: `${window.location.origin}/home`,
     });
 
     setLoading(false);
