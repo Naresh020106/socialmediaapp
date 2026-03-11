@@ -19,6 +19,7 @@ export default function LoginPage() {
       email: form.email,
       password: form.password,
       redirect: false,
+      callbackUrl: '/home',
     });
 
     setLoading(false);
@@ -31,8 +32,8 @@ export default function LoginPage() {
     }
 
     if (result?.ok) {
-      const redirectUrl = result.url || '/home';
-      router.push(redirectUrl);
+      // Ensure we always land on the home route after successful sign-in.
+      router.push('/home');
     }
   }
 
